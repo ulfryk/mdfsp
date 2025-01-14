@@ -1,4 +1,8 @@
-## sbt project compiled with Scala 3
+# music distribution for a streaming platform
+
+## Design
+
+See `./design/` directory.
 
 ### Usage
 
