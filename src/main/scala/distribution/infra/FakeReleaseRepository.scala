@@ -4,6 +4,7 @@ import cats.Monad
 import cats.syntax.all.*
 import distribution.domain.*
 import distribution.domain.ReleaseState.{Approved, Created, Proposed, Withdrawn}
+import distribution.infra.FakeReleaseRepository.{allSongs, releases}
 import organisation.domain.{ArtistId, RecordLabelId}
 
 import java.time.LocalDate
@@ -47,7 +48,10 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
       ().pure() // So cats don't provide `.tap`, but it seems wise.
     }
 
-  private var releases = mutable.HashMap(ReleaseId(1) -> Release(
+object FakeReleaseRepository:
+  def apply[F[_] : Monad](): ReleaseRepository[F] = new FakeReleaseRepository[F]()
+
+  val releases = mutable.HashMap(ReleaseId(1) -> Release(
     id = ReleaseId(1),
     artistId = ArtistId(321),
     recordLabelId = RecordLabelId(123),
@@ -56,12 +60,4 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
     songs = List.empty,
   ))
 
-  private def allSongs: List[Song] = releases.values.flatMap(_.songs).toList
-
-  def reset(data: mutable.HashMap[ReleaseId, Release]): Unit = {
-    releases = data
-  }
-
-object FakeReleaseRepository:
-  def apply[F[_] : Monad](): ReleaseRepository[F] = new FakeReleaseRepository[F]()
-  def unsafe[F[_] : Monad](): FakeReleaseRepository[F] = new FakeReleaseRepository[F]()
+  def allSongs: List[Song] = releases.values.flatMap(_.songs).toList
