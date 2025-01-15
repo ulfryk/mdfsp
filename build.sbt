@@ -1,5 +1,8 @@
 val scala3Version = "3.6.2"
 
+Test / scalacOptions += "-experimental"
+Test / scalacOptions += "-explain"
+
 lazy val root = project
   .in(file("."))
   .settings(
@@ -8,5 +11,9 @@ lazy val root = project
 
     scalaVersion := scala3Version,
 
-    libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "cats-effect" % "3.5.7",
+      "org.scalamock" %% "scalamock" % "7.0.1" % Test,
+      "org.scalameta" %% "munit" % "1.0.4" % Test
+    )
   )
