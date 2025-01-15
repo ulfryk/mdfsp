@@ -9,8 +9,8 @@ opaque type ReleaseTitle = String
 
 enum ReleaseState:
   case Created
-  case Proposed
-  case Approved
+  case Proposed(date: LocalDate)
+  case Approved(date: LocalDate)
   case Withdrawn
 
 case class Release(
@@ -18,6 +18,5 @@ case class Release(
   artistId: ArtistId,
   recordLabelId: RecordLabelId,
   title: ReleaseTitle,
-  releaseDate: Option[LocalDate], // FIXME: Smell
   state: ReleaseState
 )
