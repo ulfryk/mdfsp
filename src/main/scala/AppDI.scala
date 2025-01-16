@@ -14,7 +14,8 @@ case class AppDI[F[_] : MonadThrow](
   distributionHandler: DistributionHandler[F],
   paymentRequestRepository: PaymentRequestRepository[F],
   paymentRequestService: PaymentRequestService[F],
-)
+):
+  override def toString: String = "AppDI: I'm pretending to be DI"
 
 object AppDI:
   def apply[F[_] : MonadThrow]: AppDI[F] =
