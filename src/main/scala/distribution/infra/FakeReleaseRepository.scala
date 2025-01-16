@@ -2,9 +2,9 @@ package distribution.infra
 
 import cats.Monad
 import cats.syntax.all.*
-import common.lev
-import distribution.domain.ReleaseState.*
+import common.levEfficient
 import distribution.domain.*
+import distribution.domain.ReleaseState.*
 import distribution.infra.FakeReleaseRepository.{allSongs, releases}
 import organisation.domain.{ArtistId, RecordLabelId}
 
@@ -28,7 +28,7 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
     releases.values
       .filter(_.state == Distributed)
       .flatMap(_.songs).toList
-      .map(song => (lev(search, normalizeTitle(song.title)), song))
+      .map(song => (levEfficient(search, normalizeTitle(song.title)), song))
       .sortBy(_._1).map(_._2).pure
 
   private def normalize(text: String): String = text.replaceAll("[^a-zA-Z0-9]", "").toLowerCase
