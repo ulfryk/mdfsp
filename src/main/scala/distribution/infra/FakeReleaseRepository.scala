@@ -54,7 +54,7 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
     }
 
 object FakeReleaseRepository:
-  def apply[F[_] : Monad](): ReleaseRepository[F] = new FakeReleaseRepository[F]()
+  def apply[F[_] : Monad]: ReleaseRepository[F] = new FakeReleaseRepository[F]()
 
   val releases = mutable.HashMap(ReleaseId(1) -> Release(
     id = ReleaseId(1),
