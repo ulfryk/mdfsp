@@ -34,7 +34,7 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
     updateRelease(id, updateState(_, Withdrawn))
 
   private def appendSong(release: Release, title: SongTitle): Release =
-    val newId = if allSongs.isEmpty then 1L else allSongs.map(song => SongId.toLong(song.id)).max
+    val newId = if allSongs.isEmpty then 1L else allSongs.map(song => SongId.toLong(song.id)).max + 1
     release.copy(
       songs = release.songs :+ Song(SongId(newId), release.id, title)
     )

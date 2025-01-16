@@ -57,7 +57,7 @@ class ReleaseServiceTest extends munit.FunSuite with Stubs:
     assertEquals(repo.save.times, 1)
     assertEquals(repo.save.calls(0), input)
 
-  test("should approve release date"):
+  test("should withdraw release"):
     val input = WithdrawRelease(ArtistId(321), ReleaseId(1))
     repo.save.returns(_ => Id(default))
 
