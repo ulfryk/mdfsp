@@ -1,4 +1,6 @@
-import distribution.domain.{AddStream, ReleaseRepository, SongId, Stream, StreamId, StreamRepository, StreamSequenceId, StreamService}
+package distribution.domain
+
+import distribution.domain.{SongId, StreamId, StreamSequenceId}
 import org.scalamock.stubs.{Stub, Stubs}
 
 import java.time.Instant

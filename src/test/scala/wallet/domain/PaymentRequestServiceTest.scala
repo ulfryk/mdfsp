@@ -1,3 +1,5 @@
+package wallet.domain
+
 import cats.implicits.given
 import cats.syntax.all.*
 import distribution.domain.{ProcessingFailure, SongId, Stream, StreamId, StreamRepository, StreamSequenceId}

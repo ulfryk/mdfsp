@@ -1,3 +1,5 @@
+package distribution.domain
+
 import distribution.domain.*
 import distribution.domain.ReleaseState.*
 import org.scalamock.stubs.{Stub, Stubs}
