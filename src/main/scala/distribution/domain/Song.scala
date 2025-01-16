@@ -8,6 +8,7 @@ object SongId:
 opaque type SongTitle = String
 object SongTitle:
   def apply(title: String): SongTitle = title
+  def asString(title: SongTitle): String = title
 
 // opaque type FileId = Long
 

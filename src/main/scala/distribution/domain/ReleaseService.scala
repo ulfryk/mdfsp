@@ -66,6 +66,10 @@ class ReleaseService[F[_] : MonadThrow](private val repository: ReleaseRepositor
       else MonadThrow[F].raiseError(ProcessingFailure())
     }
 
+  def listReleasedSongs(query: String): F[List[Song]] =
+    // 1. should introduce some default limit probably - search should only return a few first items
+    repository.listReleasedSongs(query)
+
   private def validateState(release: Release, predicate: ReleaseState => Boolean): F[Release] =
     if predicate(release.state) then release.pure
     else MonadThrow[F].raiseError(ProcessingFailure())

@@ -2,8 +2,9 @@ package distribution.infra
 
 import cats.Monad
 import cats.syntax.all.*
+import common.lev
+import distribution.domain.ReleaseState.*
 import distribution.domain.*
-import distribution.domain.ReleaseState.{Approved, Created, Distributed, Proposed, Withdrawn}
 import distribution.infra.FakeReleaseRepository.{allSongs, releases}
 import organisation.domain.{ArtistId, RecordLabelId}
 
@@ -21,6 +22,17 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
       case SetReleaseDate(_, releaseId, date) => setReleaseDate(releaseId, date)
       case WithdrawRelease(_, releaseId) => withdraw(releaseId)
       case DistributeRelease(_, releaseId) => distribute(releaseId)
+
+  def listReleasedSongs(query: String): F[List[Song]] =
+    val search = normalize(query)
+    releases.values
+      .filter(_.state == Distributed)
+      .flatMap(_.songs).toList
+      .map(song => (lev(search, normalizeTitle(song.title)), song))
+      .sortBy(_._1).map(_._2).pure
+
+  private def normalize(text: String): String = text.replaceAll("[^a-zA-Z0-9]", "").toLowerCase
+  private def normalizeTitle(title: SongTitle): String = normalize(SongTitle.asString(title))
 
   private def addSong(id: ReleaseId, title: SongTitle): F[Release] =
     updateRelease(id, appendSong(_, title))
