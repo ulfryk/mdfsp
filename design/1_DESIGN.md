@@ -181,7 +181,7 @@ Release, Song, Stream, Wallet, Payment Request, and a Streaming Report.
 - responsibility:
     - manage songs within release
     - handle release date proposal and approval
-    - transition through states `Created` -> `Proposed` -> `Approved` -> `Withdrawn`
+    - transition through states `Created` -> `Proposed` -> `Approved` -> `Distributed` -> `Withdrawn`
 - relationship:
     - reference to `Artist`
     - reference to `Record Label`
@@ -302,7 +302,7 @@ Using optional date, we can end up with an object in `Released` state but withou
 to make sure we are not allowed to introduce invalid state at type system level.
 
 My idea for a solution is to create a value object containing both information - state and date, using a sum type
-solves it perfectly: `type ReleaseState = Created | Proposed Date | Approved Date | Withdrawn`.
+solves it perfectly: `type ReleaseState = Created | Proposed Date | Approved Date | Distributed | Withdrawn`.
 
 ### Timestamp issue
 

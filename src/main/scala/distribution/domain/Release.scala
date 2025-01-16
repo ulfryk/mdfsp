@@ -16,6 +16,7 @@ enum ReleaseState:
   case Created
   case Proposed(date: LocalDate)
   case Approved(date: LocalDate)
+  case Distributed
   case Withdrawn
 
 case class Release(

@@ -3,7 +3,7 @@ package distribution.infra
 import cats.Monad
 import cats.syntax.all.*
 import distribution.domain.*
-import distribution.domain.ReleaseState.{Approved, Created, Proposed, Withdrawn}
+import distribution.domain.ReleaseState.{Approved, Created, Distributed, Proposed, Withdrawn}
 import distribution.infra.FakeReleaseRepository.{allSongs, releases}
 import organisation.domain.{ArtistId, RecordLabelId}
 
@@ -20,6 +20,7 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
       case ApproveReleaseDate(_, releaseId, date) => approveReleaseDate(releaseId, date)
       case SetReleaseDate(_, releaseId, date) => setReleaseDate(releaseId, date)
       case WithdrawRelease(_, releaseId) => withdraw(releaseId)
+      case DistributeRelease(_, releaseId) => distribute(releaseId)
 
   private def addSong(id: ReleaseId, title: SongTitle): F[Release] =
     updateRelease(id, appendSong(_, title))
@@ -32,6 +33,10 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
 
   private def withdraw(id: ReleaseId): F[Release] =
     updateRelease(id, updateState(_, Withdrawn))
+
+  private def distribute(id: ReleaseId): F[Release] =
+    // In case we use a transactional outbox - create event here too.
+    updateRelease(id, updateState(_, Distributed))
 
   private def appendSong(release: Release, title: SongTitle): Release =
     val newId = if allSongs.isEmpty then 1L else allSongs.map(song => SongId.toLong(song.id)).max + 1

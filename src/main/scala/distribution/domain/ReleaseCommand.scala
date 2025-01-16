@@ -26,6 +26,11 @@ case class SetReleaseDate(
   date: LocalDate,
 ) extends ReleaseCommand
 
+case class DistributeRelease(
+  artistId: ArtistId,
+  releaseId: ReleaseId,
+) extends ReleaseCommand
+
 case class WithdrawRelease(
   artistId: ArtistId,
   releaseId: ReleaseId,
