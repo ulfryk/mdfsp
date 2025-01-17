@@ -60,6 +60,12 @@ private class FakeStreamRepository[F[_] : MonadThrow] extends StreamRepository[F
       )
     }.pure
 
+  /**
+   * This is quite an important feature.
+   * Should it happen on creation of stream or on payment request?
+   * Can the `30s` value change over time?
+   * How to sync change of this value with existing data?
+   */
   private def isMonetized(stream: Stream): Boolean =
     stream.duration >= FiniteDuration(30, SECONDS)
 

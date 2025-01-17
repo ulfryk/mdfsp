@@ -40,6 +40,7 @@ Based on provided *Task Requirements*.
 6. _keep track of streamed released songs for the distribution — only stream longer than 30sec is considered
    for monetization (assume streams are unique between each other);_
     1. should we constantly pull info about streams from a streaming platform, or do we do it in batches periodically?
+    2. should we mark every stream as considered for monetization?
 7. _artist can request a report of streamed songs — both monetized and not;_
     1. is it something visualised in ui or a file? If the latter one, what is/are the format/s?
     2. should it contain a list of all streams with dates and times of streaming or only list of songs
@@ -256,6 +257,10 @@ Some decisions are already reflected in previous sections, putting them all here
   for our prototype to accept info about new streams — I'll prepare logic for adding streams one by one. If we have
   batch processing of this data in future, the output can be used as buffer to feed our solution, or we can extend to
   functionality to accept bulk updates.
+- re `6.2`: I prefer not to mark every stream as considered for monetization, we can do that when creating report or
+  payment request. But it may be a topic of further investigation — what if 30s changes to 15s — should it affect all
+  streams not yet considered for payout? Probably not. What if we have updated this value in config too late? How to
+  fix streams that where already marked for monetization wrongly? That's a huge separate topic to investigate.
 - re `7.1` (report format): No need to answer this question for now. (My weak prediction is to start with a simple CSV…)
 - re `7.2`: I'll assume that for initial solution just stream counts are enough.
 - re `7.3` (report filtering): A must-have in a full-blown solution, but I assume it's unnecessary in the MVP.
@@ -321,6 +326,18 @@ This way, there is no ambiguity, no risk of race conditions and no potential per
 One issue we may have at some point is an overflow of the numeric value, which is 9,223,372,036,854,775,807 for
 long int in Java. I don't think it is a problem to solve right now, but just in case, I can propose
 making it unsigned (it doubles the number of values we can use) and/or use 128 bits…
+
+## Error handling
+
+For purpose of this MVP prototype I have introduced a single `ProcessingFailure` throwable (without any specific info)
+and use `MonadThrow` in places where any kinds of failure are possible in logic or any potential exceptions may appear
+from the I/O.
+
+In real life every part of the domain would have it's own set of Failures (sum type) and I would use some way to
+distinct them from predictable I/O exceptions, and from unpredictable ones, and from bug-driven exceptions. I have
+two possibilities on my mind:
+- common `OurFailure` trait which is extended by failures in all parts of the domain and it's a type of a member of `ProcessingFailure`
+- wrapping all returned values in `Either[SomeMeaningfulFailure, _]`
 
 ---
 

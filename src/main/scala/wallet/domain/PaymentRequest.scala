@@ -18,5 +18,6 @@ case class PaymentRequest(
   requestedAt: Instant,
   // To value-object or not to value-object… Flexibility vs consistency…
   // Is Int enough? Or should we use Long? Domain expert help needed!
+  // I think it should be changed to a custom union type.
   monetizedStreamsCount: Option[Int],
 )
