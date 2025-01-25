@@ -1,0 +1,66 @@
+package distribution.adapters.rest
+
+import _root_.io.circe.*
+import _root_.io.circe.generic.auto.*
+import _root_.io.circe.syntax.*
+import cats.MonadThrow
+import cats.effect.*
+import cats.implicits.*
+import common.helpers.raiseErrorOnInvalid
+import common.http4s.ApiId
+import organisation.adapters.rest.dto.Artist.given
+import distribution.adapters.rest.dto.RecordLabel.given
+import distribution.adapters.rest.dto.Release.given
+import distribution.adapters.rest.dto.Song.given
+import distribution.adapters.rest.dto.{CreateSongRequest, ReleaseResponse, SongResponse}
+import distribution.domain.{AddSong, ReleaseId, ReleaseService}
+import org.http4s.*
+import org.http4s.Header.*
+import org.http4s.circe.*
+import org.http4s.dsl.io.*
+import org.http4s.headers.`Content-Type`
+import organisation.domain.ArtistId
+
+case class InvalidApiId(override val message: String) extends MessageFailure:
+  override def cause: Option[Throwable] = None
+  override def toHttpResponse[F[_]](httpVersion: HttpVersion): Response[F] = Response(status = BadRequest)
+
+val `application/json` = MediaType("application", "json")
+
+extension (req: Request[IO])
+  def withContentTypeX(expected: MediaType)(fn: => IO[Response[IO]]): IO[Response[IO]] =
+    req.headers.get[`Content-Type`] match
+      case Some(ct) => ct.mediaType match
+        case mediaType if mediaType == expected => fn
+        case other => IO.raiseError(MediaTypeMismatch(other, Set(expected)))
+      case None => IO.raiseError(MediaTypeMissing(Set(expected)))
+
+def distributionRoutes(service: ReleaseService[IO])(using MonadThrow[IO]) = HttpRoutes.of[IO] {
+
+  case req @ POST -> Root / "releases" / ApiId(releaseId) / "songs" => req.withContentTypeX(`application/json`) {
+    for
+      idVal <- releaseId.raiseErrorOnInvalid { es =>
+        InvalidApiId("releaseId: " + es.foldLeft("")(_ ++ _.message))
+      }
+      input <- req.as[CreateSongRequest]
+      artistId = ArtistId(321) // should come from auth token most probably
+      command = AddSong(artistId, ReleaseId(idVal), input.title)
+      created <- service.addSong(command)
+      // That `.find(…).get.id` part below is questionable… Just for the sake of MVP
+      output = SongResponse(created.songs.find(_.title == input.title).get.id, created.id, input.title)
+      resp <- Ok(output.asJson)
+    yield resp
+  }
+
+  case GET -> Root / "releases" / ApiId(releaseId) =>
+    for {
+      idVal <- releaseId.raiseErrorOnInvalid { es =>
+        InvalidApiId("releaseId: " + es.foldLeft("")(_ ++ _.message))
+      }
+      releaseOpt <- service.find(ReleaseId(idVal))
+      resp <- releaseOpt match
+        case None => NotFound(s"Release '$idVal' not found.")
+        case Some(release) => Ok(ReleaseResponse(release).asJson)
+    } yield resp
+
+}

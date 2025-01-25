@@ -8,6 +8,8 @@ import organisation.domain.{ArtistId, RecordLabelId}
 import java.time.LocalDate
 
 class ReleaseService[F[_] : MonadThrow](private val repository: ReleaseRepository[F]):
+  
+  def find(id: ReleaseId): F[Option[Release]] = repository.find(id)
 
   def addSong(command: AddSong): F[Release] =
     // 1. Don't allow if artist doesn't own release.

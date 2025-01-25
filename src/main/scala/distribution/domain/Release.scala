@@ -1,5 +1,6 @@
 package distribution.domain
 
+import cats.syntax.all.*
 import organisation.domain.{ArtistId, RecordLabelId}
 
 import java.time.LocalDate
@@ -7,10 +8,12 @@ import java.time.LocalDate
 opaque type ReleaseId = Long
 object ReleaseId:
   def apply(id: Long): ReleaseId = id
+  def unapply(id: ReleaseId): Option[Long] = id.some
   
 opaque type ReleaseTitle = String
 object ReleaseTitle:
   def apply(title: String): ReleaseTitle = title
+  def unapply(title: ReleaseTitle): Option[String] = title.some
 
 enum ReleaseState:
   case Created

@@ -12,8 +12,8 @@ import java.time.LocalDate
 import scala.collection.mutable
 
 private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
-  def get(id: ReleaseId): F[Release] =
-    releases(id).pure()
+  def find(id: ReleaseId): F[Option[Release]] = releases.get(id).pure
+  def get(id: ReleaseId): F[Release] = releases(id).pure
 
   def save(command: ReleaseCommand): F[Release] =
     command match
