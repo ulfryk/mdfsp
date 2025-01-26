@@ -55,7 +55,7 @@ class HappyPathFlowTest extends munit.FunSuite:
       assertEquals(releaseWasSetForDistribution.get.state, Distributed)
 
     test("5. Released songs where searched by title using Levenshtein distance algorithm."):
-      val songs = context.releaseService.listReleasedSongs("third")
+      val songs = context.releaseService.listReleasedSongs("third".some)
       assert(songs.isSuccess)
       assertEquals(songs.get.get(0).get.title, SongTitle("Third Song"))
       assertEquals(songs.get.get(1).get.title, SongTitle("First Song"))

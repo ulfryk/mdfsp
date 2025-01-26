@@ -53,3 +53,12 @@ curl -v 'http://localhost:8114/releases/1/force-distributed' -X POST \
 curl -v 'http://localhost:8114/released-songs?search=xello%20xorld' \
   -H 'Accept: application/json'
 ```
+
+## 6. New stream was created
+
+```shell
+curl -v 'http://localhost:8114/streams' -X POST \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  --data-raw '{ "songId": 4, "duration": 12 }'
+```

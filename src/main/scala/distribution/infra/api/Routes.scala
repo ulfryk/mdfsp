@@ -12,6 +12,7 @@ import distribution.domain.*
 import distribution.infra.api.dto.RecordLabel.given
 import distribution.infra.api.dto.Release.given
 import distribution.infra.api.dto.Song.given
+import distribution.infra.api.dto.Stream.given
 import distribution.infra.api.dto.*
 import org.http4s.*
 import org.http4s.Header.*
@@ -35,7 +36,10 @@ extension (req: Request[IO])
         case other => IO.raiseError(MediaTypeMismatch(other, Set(expected)))
       case None => IO.raiseError(MediaTypeMissing(Set(expected)))
 
-def distributionRoutes(service: ReleaseService[IO])(using MonadThrow[IO]) = HttpRoutes.of[IO] {
+def distributionRoutes(
+  service: ReleaseService[IO],
+  streamService: StreamService[IO],
+)(using MonadThrow[IO]) = HttpRoutes.of[IO] {
 
   case req @ POST -> Root / "releases" / ApiId(releaseId) / "songs" => req.withContentTypeX(`application/json`) {
     for
@@ -94,6 +98,14 @@ def distributionRoutes(service: ReleaseService[IO])(using MonadThrow[IO]) = Http
             service.setReleaseDate(SetReleaseDate(artistId, releaseId, date))
       resp <- Ok(ReleaseResponse(release).asJson)
     } yield resp
+  }
+
+  case req @ POST -> Root / "streams" => req.withContentTypeX(`application/json`) {
+    for
+      input <- req.as[CreateStreamRequest]
+      created <- streamService.add(input.toCommand)
+      resp <- Ok(StreamResponse(created).asJson)
+    yield resp
   }
 
   // #===============#
