@@ -23,13 +23,15 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
       case WithdrawRelease(_, releaseId) => withdraw(releaseId)
       case DistributeRelease(_, releaseId) => distribute(releaseId)
 
-  def listReleasedSongs(query: String): F[List[Song]] =
-    val search = normalize(query)
-    releases.values
+  def listReleasedSongs(query: Option[String]): F[List[Song]] =
+    val released = releases.values
       .filter(_.state == Distributed)
       .flatMap(_.songs).toList
-      .map(song => (levEfficient(search, normalizeTitle(song.title)), song))
-      .sortBy(_._1).map(_._2).pure
+    query.map(normalize) match
+      case None => released.pure
+      case Some(search) => released
+        .map(song => (levEfficient(search, normalizeTitle(song.title)), song))
+        .sortBy(_._1).map(_._2).pure
 
   private def normalize(text: String): String = text.replaceAll("[^a-zA-Z0-9]", "").toLowerCase
   private def normalizeTitle(title: SongTitle): String = normalize(SongTitle.asString(title))
