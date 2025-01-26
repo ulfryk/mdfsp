@@ -21,7 +21,8 @@ object App extends IOApp.Simple:
       .default[IO]
       .withHost(ipv4"0.0.0.0")
       .withPort(port"8114")
-      .withHttpApp(httpAppLogged(Router("/" -> distributionRoutes(di.releaseService, di.streamService))))
+      .withHttpApp(httpAppLogged(Router("/" -> distributionRoutes(
+        di.releaseService, di.streamService, di.streamingReportService))))
       .build
       .useForever
 

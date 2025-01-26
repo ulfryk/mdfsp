@@ -8,6 +8,7 @@ import cats.effect.*
 import cats.implicits.*
 import common.helpers.raiseErrorOnInvalid
 import common.http4s.ApiId
+import distribution.StreamingReportService
 import distribution.domain.*
 import distribution.infra.api.dto.RecordLabel.given
 import distribution.infra.api.dto.Release.given
@@ -39,6 +40,7 @@ extension (req: Request[IO])
 def distributionRoutes(
   service: ReleaseService[IO],
   streamService: StreamService[IO],
+  streamReport: StreamingReportService[IO],
 )(using MonadThrow[IO]) = HttpRoutes.of[IO] {
 
   case req @ POST -> Root / "releases" / ApiId(releaseId) / "songs" => req.withContentTypeX(`application/json`) {
@@ -107,6 +109,10 @@ def distributionRoutes(
       resp <- Ok(StreamResponse(created).asJson)
     yield resp
   }
+
+  case GET -> Root / "streams-report2" =>
+    val report = streamReport.getReport2(ArtistId(321))
+    Ok(report.map(_.asJson))
 
   // #===============#
   // # TEMP TECH API #

@@ -5,7 +5,8 @@ import cats.data.NonEmptyList
 import cats.syntax.all.*
 import distribution.domain.StreamSequenceId.given_Ordering_StreamSequenceId.mkOrderingOps
 import distribution.domain.{AddStream, ProcessingFailure, Song, SongId, SongReport, Stream, StreamCommand, StreamId, StreamRepository, StreamSequenceId}
-import FakeStreamRepository.streams
+import distribution.infra.db.FakeStreamRepository.streams
+import fs2.Stream as FStream
 import organisation.domain.ArtistId
 
 import scala.collection.mutable
@@ -27,7 +28,7 @@ private class FakeStreamRepository[F[_] : MonadThrow] extends StreamRepository[F
       stream.sequenceId > after.getOrElse(StreamSequenceId(0))
         && stream.sequenceId <= to
         && artistSongIds.contains(stream.songId)
-        && isMonetized(stream)).pure
+        && stream.isMonetized()).pure
 
   def save(command: StreamCommand): F[Stream] =
     command match
@@ -46,10 +47,10 @@ private class FakeStreamRepository[F[_] : MonadThrow] extends StreamRepository[F
 
   def getSongsWithStreams(artistId: ArtistId): F[List[SongReport]] =
     val groupedCounts = streams.toList.groupMapReduce(_.songId)(stream =>
-        if isMonetized(stream) then (1, 1) else (1, 0)
-      ) {
-        case ((t1, m1), (t2, m2)) => (t1 + t2, m1 + m2)
-      }.withDefault(_ => (0, 0))
+      if stream.isMonetized() then (1, 1) else (1, 0)
+    ) {
+      case ((t1, m1), (t2, m2)) => (t1 + t2, m1 + m2)
+    }.withDefault(_ => (0, 0))
     getArtistSongs(artistId).map { song =>
       val counts = groupedCounts(song.id)
       SongReport(
@@ -60,14 +61,7 @@ private class FakeStreamRepository[F[_] : MonadThrow] extends StreamRepository[F
       )
     }.pure
 
-  /**
-   * This is quite an important feature.
-   * Should it happen on creation of stream or on payment request?
-   * Can the `30s` value change over time?
-   * How to sync change of this value with existing data?
-   */
-  private def isMonetized(stream: Stream): Boolean =
-    stream.duration >= FiniteDuration(30, SECONDS)
+  def getAll(songId: SongId): FStream[F, Stream] = FStream.emits(streams.filter(_.songId == songId))
 
   private def getArtistSongIs(artistId: ArtistId): Set[SongId] =
     getArtistSongs(artistId).map(_.id).toSet

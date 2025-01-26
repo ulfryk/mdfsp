@@ -49,7 +49,6 @@ curl -v 'http://localhost:8114/releases/1/force-distributed' -X POST \
 ## 5. Released songs where searched by title using Levenshtein distance algorithm.
 
 ```shell
-
 curl -v 'http://localhost:8114/released-songs?search=xello%20xorld' \
   -H 'Accept: application/json'
 ```
@@ -60,5 +59,12 @@ curl -v 'http://localhost:8114/released-songs?search=xello%20xorld' \
 curl -v 'http://localhost:8114/streams' -X POST \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json' \
-  --data-raw '{ "songId": 4, "duration": 12 }'
+  --data-raw '{ "songId": 6, "duration": 1 }'
+```
+
+## 7. Artist requested and received a report of streamed songs (both monetized and not)
+
+```shell
+curl -v 'http://localhost:8114/streams-report2' \
+  -H 'Accept: application/json'
 ```

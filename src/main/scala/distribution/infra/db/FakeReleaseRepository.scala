@@ -5,7 +5,8 @@ import cats.syntax.all.*
 import common.levEfficient
 import distribution.domain.*
 import distribution.domain.ReleaseState.*
-import FakeReleaseRepository.{allSongs, releases}
+import distribution.infra.db.FakeReleaseRepository.{allSongs, releases}
+import fs2.Stream as FStream
 import organisation.domain.{ArtistId, RecordLabelId}
 
 import java.time.LocalDate
@@ -32,6 +33,12 @@ private class FakeReleaseRepository[F[_] : Monad] extends ReleaseRepository[F]:
       case Some(search) => released
         .map(song => (levEfficient(search, normalizeTitle(song.title)), song))
         .sortBy(_._1).map(_._2).pure
+
+  def getAllSongsWithReleaseTitle(artistId: ArtistId): FStream[F, (ReleaseTitle, Song)] =
+    FStream.emits(allSongs)
+      .map(song => (releases(song.releaseId), song))
+      .filter { case (release, _) => release.artistId == artistId }
+      .map { case (release, song) => (release.title, song) }
 
   private def normalize(text: String): String = text.replaceAll("[^a-zA-Z0-9]", "").toLowerCase
   private def normalizeTitle(title: SongTitle): String = normalize(SongTitle.asString(title))

@@ -1,7 +1,7 @@
 import cats.MonadThrow
-import distribution.{DistributionHandler, StreamingReportService}
 import distribution.domain.{ReleaseRepository, ReleaseService, StreamRepository, StreamService}
 import distribution.infra.db.{FakeReleaseRepository, FakeStreamRepository}
+import distribution.{DistributionHandler, StreamingReportService}
 import wallet.domain.{PaymentRequestRepository, PaymentRequestService}
 import wallet.infra.db.FakePaymentRequestRepository
 
@@ -27,7 +27,7 @@ object AppDI:
       ReleaseService(releaseRepo),
       streamRepo,
       StreamService(streamRepo, releaseRepo),
-      StreamingReportService(streamRepo),
+      StreamingReportService(releaseRepo, streamRepo),
       DistributionHandler(),
       paymentReqRepo,
       PaymentRequestService(paymentReqRepo, streamRepo),
