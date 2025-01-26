@@ -1,4 +1,4 @@
-package distribution.adapters.rest.dto
+package distribution.infra.api.dto
 
 import _root_.io.circe.*
 import _root_.io.circe.generic.auto.*

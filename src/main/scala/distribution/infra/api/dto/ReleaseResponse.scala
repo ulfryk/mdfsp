@@ -1,4 +1,4 @@
-package distribution.adapters.rest.dto
+package distribution.infra.api.dto
 
 import distribution.domain.{Release, ReleaseId, ReleaseState, ReleaseTitle, Song}
 import organisation.domain.{ArtistId, RecordLabelId}

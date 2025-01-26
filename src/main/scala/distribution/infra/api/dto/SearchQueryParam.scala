@@ -1,5 +1,4 @@
-package distribution.adapters.rest.dto
-
+package distribution.infra.api.dto
 
 import cats.data.Validated.{invalidNel, validNel}
 import cats.data.ValidatedNel
@@ -10,7 +9,7 @@ opaque type SearchQueryParam = String
 
 object SearchQueryParam:
   def toString(query: SearchQueryParam): String = query
-  
+
   object Matcher extends OptionalValidatingQueryParamDecoderMatcher[SearchQueryParam]("search")
 
   private def validateFooItemTextFromString(s: String): ValidatedNel[ParseFailure, SearchQueryParam] =

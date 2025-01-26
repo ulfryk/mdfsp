@@ -1,9 +1,9 @@
 import cats.MonadThrow
 import distribution.{DistributionHandler, StreamingReportService}
 import distribution.domain.{ReleaseRepository, ReleaseService, StreamRepository, StreamService}
-import distribution.infra.{FakeReleaseRepository, FakeStreamRepository}
+import distribution.infra.db.{FakeReleaseRepository, FakeStreamRepository}
 import wallet.domain.{PaymentRequestRepository, PaymentRequestService}
-import wallet.infra.FakePaymentRequestRepository
+import wallet.infra.db.FakePaymentRequestRepository
 
 case class AppDI[F[_] : MonadThrow](
   releaseRepository: ReleaseRepository[F],

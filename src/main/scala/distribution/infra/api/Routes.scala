@@ -1,4 +1,4 @@
-package distribution.adapters.rest
+package distribution.infra.api
 
 import _root_.io.circe.*
 import _root_.io.circe.generic.auto.*
@@ -8,19 +8,18 @@ import cats.effect.*
 import cats.implicits.*
 import common.helpers.raiseErrorOnInvalid
 import common.http4s.ApiId
-import distribution.adapters.rest.dto.*
-import distribution.adapters.rest.dto.SearchQueryParam
-import distribution.adapters.rest.dto.RecordLabel.given
-import distribution.adapters.rest.dto.Release.given
-import distribution.adapters.rest.dto.Song.given
 import distribution.domain.*
+import distribution.infra.api.dto.RecordLabel.given
+import distribution.infra.api.dto.Release.given
+import distribution.infra.api.dto.Song.given
+import distribution.infra.api.dto.*
 import org.http4s.*
 import org.http4s.Header.*
 import org.http4s.circe.*
-import org.http4s.dsl.io.{/, *}
+import org.http4s.dsl.io.*
 import org.http4s.headers.`Content-Type`
-import organisation.adapters.rest.dto.Artist.given
 import organisation.domain.{ArtistId, RecordLabelId}
+import organisation.infra.api.Artist.given
 
 case class InvalidApiId(override val message: String) extends MessageFailure:
   override def cause: Option[Throwable] = None

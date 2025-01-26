@@ -1,4 +1,4 @@
-package distribution.adapters.rest.dto
+package distribution.infra.api.dto
 
 import cats.syntax.all.*
 import distribution.domain.{ReleaseId, Song, SongId, SongTitle}

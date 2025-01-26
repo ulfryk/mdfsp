@@ -1,4 +1,4 @@
-package distribution.adapters.rest.dto
+package distribution.infra.api.dto
 
 import distribution.domain.{ReleaseId, ReleaseState, ReleaseTitle}
 import io.circe.Encoder

@@ -1,11 +1,11 @@
-package distribution.infra
+package distribution.infra.db
 
 import cats.Monad
 import cats.syntax.all.*
 import common.levEfficient
 import distribution.domain.*
 import distribution.domain.ReleaseState.*
-import distribution.infra.FakeReleaseRepository.{allSongs, releases}
+import FakeReleaseRepository.{allSongs, releases}
 import organisation.domain.{ArtistId, RecordLabelId}
 
 import java.time.LocalDate

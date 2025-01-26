@@ -1,11 +1,11 @@
-package distribution.infra
+package distribution.infra.db
 
 import cats.MonadThrow
 import cats.data.NonEmptyList
 import cats.syntax.all.*
 import distribution.domain.StreamSequenceId.given_Ordering_StreamSequenceId.mkOrderingOps
 import distribution.domain.{AddStream, ProcessingFailure, Song, SongId, SongReport, Stream, StreamCommand, StreamId, StreamRepository, StreamSequenceId}
-import distribution.infra.FakeStreamRepository.streams
+import FakeStreamRepository.streams
 import organisation.domain.ArtistId
 
 import scala.collection.mutable

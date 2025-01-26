@@ -1,4 +1,4 @@
-package wallet.infra
+package wallet.infra.db
 
 import cats.MonadThrow
 import cats.data.NonEmptyList
@@ -7,7 +7,7 @@ import distribution.domain.StreamSequenceId.given_Ordering_StreamSequenceId.mkOr
 import distribution.domain.{ProcessingFailure, StreamSequenceId}
 import organisation.domain.ArtistId
 import wallet.domain.*
-import wallet.infra.FakePaymentRequestRepository.paymentRequests
+import FakePaymentRequestRepository.paymentRequests
 
 import java.time.Instant
 import scala.collection.mutable

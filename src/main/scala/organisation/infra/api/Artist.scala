@@ -1,4 +1,4 @@
-package organisation.adapters.rest.dto
+package organisation.infra.api
 
 import cats.syntax.all.*
 import io.circe.{Decoder, Encoder}

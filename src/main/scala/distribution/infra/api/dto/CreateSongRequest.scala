@@ -1,10 +1,10 @@
-package distribution.adapters.rest.dto
+package distribution.infra.api.dto
 
 import _root_.io.circe.*
 import _root_.io.circe.generic.auto.*
 import cats.effect.IO
 import cats.syntax.all.*
-import distribution.adapters.rest.dto.Song.given
+import Song.given
 import distribution.domain.SongTitle
 import org.http4s.EntityDecoder
 import org.http4s.circe.jsonOf

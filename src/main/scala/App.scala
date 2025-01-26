@@ -1,7 +1,7 @@
 import cats.effect.std.Console
 import cats.effect.{Async, ExitCode, IO, IOApp}
 import com.comcast.ip4s.{ipv4, port}
-import distribution.adapters.rest.distributionRoutes
+import distribution.infra.api.distributionRoutes
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
 import org.http4s.server.middleware.Logger
